@@ -21,6 +21,13 @@ const mainDiv = () => document.getElementById('main');
 const homeLink = () => document.getElementById('home-link');
 const createJobLink = () => document.getElementById('create-job-link');
 const listJobsLink = () => document.getElementById('list-jobs-link');
+const companyName = () => document.getElementById('company-name');
+const jobName = () => document.getElementById('job-name');
+const applicationStatus = () => document.getElementById('application-status');
+const firstInterviewStatus = () => document.getElementById('first-interview-status');
+const secondInterviewStatus = () => document.getElementById('second-interview-status');
+const thirdInterviewStatus = () => document.getElementById('third-interview-status');
+
 
 /** Event Listeners **/
 const attachHomePageLinkEvent = () => {
@@ -36,6 +43,34 @@ const attachListJobsLinkEvent = () => {
 }
 
 /** Event Handlers **/
+
+const submitForm = event => {
+  event.preventDefault();
+
+  const jsonObject = {
+    company: companyName().value,
+    title: jobName().value,
+    application: applicationStatus().value,
+    first_interview: firstInterviewStatus().value,
+    second_interview: secondInterviewStatus().value,
+    third_interview: thirdInterviewStatus().value
+  }
+
+  fetch(baseUrl + '/jobs', {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(jsonObject)
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      jobs.push(data);
+      loadListJobs()
+    })
+}
+
 const loadHome = event => {
   if(event) {
     event.preventDefault();
@@ -73,27 +108,37 @@ const loadCreateJob = event => {
   const div5 = createSelectField('second-interview-status','s3', 'Second Interview Status', 'Second Interview', ["N/A", "Scheduled", "Completed"])
   const div6 = createSelectField('third-interview-status','s3', 'Third Interview Status', 'Third Interview', ["N/A", "Scheduled", "Completed"])
 
+  const submit = document.createElement('input');
+  submit.setAttribute('type', 'submit');
+  submit.setAttribute('id', 'submit-form');
+  submit.className = 'btn indigo darken-4';
+  
   row1.appendChild(div1);
   row1.appendChild(div2);
-
+  
   row2.appendChild(div3)
   row2.appendChild(div4)
   row2.appendChild(div5)
   row2.appendChild(div6)
-
+  
   form.appendChild(row1);
   form.appendChild(row2);
+  form.appendChild(submit);
+  form.addEventListener('submit', submitForm);
   
   mainDiv().appendChild(h1);
   mainDiv().appendChild(form);
 
+  
   $(document).ready(function(){
     $('select').formSelect();
   });
 }
 
 const loadListJobs = event => {
-  event.preventDefault();
+  if(event) {
+    event.preventDefault();
+  }
   resetMainDiv();
   const h1 = document.createElement('h1');
   const div = document.createElement('div');
@@ -109,15 +154,6 @@ const loadListJobs = event => {
 
     div.appendChild(a);
   })
-
-  // <h1>Job Trackings</h1>
-  // <div class="collection">
-  //   <a class="collection-item">Github</a>
-  //   <a class="collection-item">Amazon</a>
-  //   <a class="collection-item">Facebook</a>
-  //   <a class="collection-item">Twitter</a>
-  //   <a class="collection-item">LinkdIn</a>
-  // </div>
 
   mainDiv().appendChild(h1);
   mainDiv().appendChild(div);

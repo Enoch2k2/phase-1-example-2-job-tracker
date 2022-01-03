@@ -20,6 +20,5 @@ MVP
 
 STRETCH
 5. delete
-6. edit
 7. todo list for job
 8. easy click tracking
