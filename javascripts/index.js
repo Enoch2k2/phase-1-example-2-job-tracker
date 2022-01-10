@@ -27,6 +27,12 @@ const applicationStatus = () => document.getElementById('application-status');
 const firstInterviewStatus = () => document.getElementById('first-interview-status');
 const secondInterviewStatus = () => document.getElementById('second-interview-status');
 const thirdInterviewStatus = () => document.getElementById('third-interview-status');
+const companyNameModal = () => document.getElementById('company-name-modal');
+const jobTitleModal = () => document.getElementById('job-title-modal');
+const applicationStatusModal = () => document.getElementById('application-status-modal');
+const firstInterviewModal = () => document.getElementById('first-interview-modal');
+const secondInterviewModal = () => document.getElementById('second-interview-modal');
+const thirdInterviewModal = () => document.getElementById('third-interview-modal');
 
 
 /** Event Listeners **/
@@ -43,6 +49,17 @@ const attachListJobsLinkEvent = () => {
 }
 
 /** Event Handlers **/
+
+const populateModal = event => {
+  event.preventDefault();
+  const job = jobs.find(job => event.target.innerText === job.company)
+  companyNameModal().innerText = job.company;
+  jobTitleModal().innerText = job.title;
+  applicationStatusModal().innerText = `Application Status: ${ job.application }`;
+  firstInterviewModal().innerText = `First Interview: ${ job.first_interview }`;
+  secondInterviewModal().innerText = `Second Interview: ${ job.second_interview }`;
+  thirdInterviewModal().innerText = `Third Interview: ${ job.third_interview }`;
+}
 
 const submitForm = event => {
   event.preventDefault();
@@ -149,11 +166,18 @@ const loadListJobs = event => {
 
   jobs.forEach(job => {
     const a = document.createElement('a');
-    a.className = 'collection-item';
+    a.setAttribute('href', "#modal1")
+    a.className = 'collection-item modal-trigger';
     a.innerText = job.company
+    a.addEventListener('click', populateModal)
 
     div.appendChild(a);
   })
+  // var elems = document.querySelectorAll('.modal');
+  // var instances = M.Modal.init(elems, {
+  //   onOpenEnd: populateModal
+  // });
+  $('.modal').modal();
 
   mainDiv().appendChild(h1);
   mainDiv().appendChild(div);

@@ -15,10 +15,10 @@ Create Job Tracking
 MVP
 1. Navigation - (started)
 2. Home Page - (finished)
-3. Job List Page
-4. Job Form Page
+3. Job List Page - (finished)
+4. Job Form Page - (finished)
 
 STRETCH
-5. delete
-7. todo list for job
-8. easy click tracking
+5. delete -
+7. todo list for job - more details page - 
+8. easy click tracking (edit) - 
