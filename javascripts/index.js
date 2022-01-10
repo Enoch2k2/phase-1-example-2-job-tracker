@@ -33,6 +33,7 @@ const applicationStatusModal = () => document.getElementById('application-status
 const firstInterviewModal = () => document.getElementById('first-interview-modal');
 const secondInterviewModal = () => document.getElementById('second-interview-modal');
 const thirdInterviewModal = () => document.getElementById('third-interview-modal');
+const modalFooter = () => document.getElementById('modal-footer');
 
 
 /** Event Listeners **/
@@ -59,6 +60,31 @@ const populateModal = event => {
   firstInterviewModal().innerText = `First Interview: ${ job.first_interview }`;
   secondInterviewModal().innerText = `Second Interview: ${ job.second_interview }`;
   thirdInterviewModal().innerText = `Third Interview: ${ job.third_interview }`;
+  
+  const deleteJob = event => {
+    // delete fetch
+    fetch(baseUrl + '/jobs/' + job.id, {
+      method: "DELETE",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+      .then(resp => resp.json())
+      .then(data => {
+        jobs = jobs.filter(j => j.id !== job.id);
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+        instances[0].close();
+        loadListJobs();
+      })
+  }
+  modalFooter().innerHTML = ''
+  const button = document.createElement('button');
+  button.innerText = 'Delete'
+  button.className = 'btn'
+  button.addEventListener('click', deleteJob);
+  modalFooter().appendChild(button);
 }
 
 const submitForm = event => {

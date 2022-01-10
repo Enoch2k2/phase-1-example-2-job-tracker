@@ -1,33 +1,6 @@
 {
   "jobs": [
     {
-      "id": 1,
-      "company": "Github",
-      "title": "Software Engineer",
-      "application": "filled out",
-      "first_interview": "n/a",
-      "second_interview": "n/a",
-      "third_interview": "n/a"
-    },
-    {
-      "id": 2,
-      "company": "Amazon",
-      "title": "Software Engineer",
-      "application": "turned in",
-      "first_interview": "Finished",
-      "second_interview": "Scheduled",
-      "third_interview": "n/a"
-    },
-    {
-      "id": 3,
-      "company": "Twitter",
-      "title": "Software Engineer",
-      "application": "Not Filled Out",
-      "first_interview": "n/a",
-      "second_interview": "n/a",
-      "third_interview": "n/a"
-    },
-    {
       "id": 4,
       "company": "Facebook",
       "title": "Software Engineer",
