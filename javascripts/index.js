@@ -81,15 +81,22 @@ const populateModal = event => {
   }
   modalFooter().innerHTML = ''
   const button = document.createElement('button');
+  const editButton = document.createElement('button');
   button.innerText = 'Delete'
+  editButton.innerText = 'Edit'
   button.className = 'btn'
+  editButton.className="btn"
+  editButton.style.marginRight = '10px';
   button.addEventListener('click', deleteJob);
+  editButton.addEventListener('click', () => populateEditForm(job));
+  // TODO: Add event listener to edit button to display edit form
+  modalFooter().appendChild(editButton);
   modalFooter().appendChild(button);
 }
 
-const submitForm = event => {
-  event.preventDefault();
 
+const submitForm = () => {
+  
   const jsonObject = {
     company: companyName().value,
     title: jobName().value,
@@ -98,7 +105,7 @@ const submitForm = event => {
     second_interview: secondInterviewStatus().value,
     third_interview: thirdInterviewStatus().value
   }
-
+  
   fetch(baseUrl + '/jobs', {
     method: "POST",
     headers: {
@@ -107,11 +114,11 @@ const submitForm = event => {
     },
     body: JSON.stringify(jsonObject)
   })
-    .then(resp => resp.json())
-    .then(data => {
-      jobs.push(data);
-      loadListJobs()
-    })
+  .then(resp => resp.json())
+  .then(data => {
+    jobs.push(data);
+    loadListJobs()
+  })
 }
 
 const loadHome = event => {
@@ -121,40 +128,79 @@ const loadHome = event => {
   resetMainDiv();
   const h1 = document.createElement('h1')
   const p = document.createElement('p')
-
+  
   h1.className = 'center-align';
   p.className = 'center-align';
-
+  
   h1.innerText = 'Welcome to Flatiron Job Tracker'
   p.innerText = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error inventore doloremque molestias quasi id harum consectetur! Facilis aut mollitia dolorem similique itaque aliquid quisquam explicabo? Maxime veritatis quia rem sint?'
-
+  
   mainDiv().appendChild(h1);
   mainDiv().appendChild(p);
-
+  
   // <h1 class="center-align">Welcome to Flatiron Job Tracker</h1>
   // <p class="center-align">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error inventore doloremque molestias quasi id harum consectetur! Facilis aut mollitia dolorem similique itaque aliquid quisquam explicabo? Maxime veritatis quia rem sint?</p>
 }
 
-const loadCreateJob = event => {
-  event.preventDefault();
+const closeModal = () => {
+  var elem = document.querySelector('.modal');
+  var instance = M.Modal.getInstance(elem);
+  instance.close();
+}
+
+const populateEditForm = (job) => {
   resetMainDiv();
-  const h1 = createH1('Create Job');
+  closeModal();
+  loadForm('Edit ' + job.company, updateJob, job)  
+}
+
+const updateJob = (job) => {
+  const jsonObject = {
+    company: companyName().value,
+    title: jobName().value,
+    application: applicationStatus().value,
+    first_interview: firstInterviewStatus().value,
+    second_interview: secondInterviewStatus().value,
+    third_interview: thirdInterviewStatus().value
+  }
+
+  fetch(baseUrl + '/jobs/' + job.id, {
+    method: "PATCH",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(jsonObject)
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      const index = jobs.indexOf(job);
+      jobs[index] = data;
+      loadListJobs();
+    })
+}
+
+const loadForm = (headerText, formCallback, job) => {
+  const h1 = createH1(headerText);
   const form = document.createElement('form');
   const row1 = createRow();
   const row2 = createRow();
 
-  const div1 = createTextField('company-name', 'Company', 's6');
-  const div2 = createTextField('job-name', 'Job Name', 's6');
+  const div1 = createTextField('company-name', 'Company', 's6', job ? job.company : null);
+  const div2 = createTextField('job-name', 'Job Name', 's6', job ? job.title : null);
 
-  const div3 = createSelectField('application-status', 's3', 'Application Status', 'Application', ["Not Filled Out", "Filled Out", "Submitted"])
-  const div4 = createSelectField('first-interview-status','s3', 'First Interview Status', 'First Interview', ["N/A", "Scheduled", "Completed"])
-  const div5 = createSelectField('second-interview-status','s3', 'Second Interview Status', 'Second Interview', ["N/A", "Scheduled", "Completed"])
-  const div6 = createSelectField('third-interview-status','s3', 'Third Interview Status', 'Third Interview', ["N/A", "Scheduled", "Completed"])
+  const div3 = createSelectField('application-status', 's3', 'Application Status', 'Application', ["Not Filled Out", "Filled Out", "Submitted"], job ? job.application : null)
+  const div4 = createSelectField('first-interview-status','s3', 'First Interview Status', 'First Interview', ["N/A", "Scheduled", "Completed"], job ? job.first_interview : null)
+  const div5 = createSelectField('second-interview-status','s3', 'Second Interview Status', 'Second Interview', ["N/A", "Scheduled", "Completed"], job ? job.second_interview : null)
+  const div6 = createSelectField('third-interview-status','s3', 'Third Interview Status', 'Third Interview', ["N/A", "Scheduled", "Completed"], job ? job.third_interview : null)
 
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');
   submit.setAttribute('id', 'submit-form');
   submit.className = 'btn indigo darken-4';
+  if(job) {
+    submit.setAttribute('value', 'Update Job');
+  }
   
   row1.appendChild(div1);
   row1.appendChild(div2);
@@ -167,15 +213,22 @@ const loadCreateJob = event => {
   form.appendChild(row1);
   form.appendChild(row2);
   form.appendChild(submit);
-  form.addEventListener('submit', submitForm);
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    formCallback(job);
+  });
   
   mainDiv().appendChild(h1);
   mainDiv().appendChild(form);
 
+  $('select').formSelect();
+}
+
+const loadCreateJob = event => {
+  event.preventDefault();
+  resetMainDiv();
   
-  $(document).ready(function(){
-    $('select').formSelect();
-  });
+  loadForm('Create Job', submitForm)
 }
 
 const loadListJobs = event => {
@@ -238,13 +291,16 @@ const createFormCol = colSize => {
   return div;
 }
 
-const createTextField = (id, labelText, colSize) => {
+const createTextField = (id, labelText, colSize, value) => {
   const div = createFormCol(colSize);
   const label = document.createElement('label');
   const input = document.createElement('input');
 
   input.setAttribute('type', 'text');
   input.setAttribute('id', id);
+  if(value) {
+    input.setAttribute('value', value);
+  }
 
   label.setAttribute('for', id);
   label.innerText = labelText;
@@ -255,7 +311,7 @@ const createTextField = (id, labelText, colSize) => {
   return div;
 }
 
-const createSelectField = (id, colSize, placeholder, labelText, options=[]) => {
+const createSelectField = (id, colSize, placeholder, labelText, options=[], value) => {
   const div = createFormCol(colSize);
   const select = document.createElement('select');
   const option = document.createElement('option');
@@ -274,9 +330,16 @@ const createSelectField = (id, colSize, placeholder, labelText, options=[]) => {
   options.forEach( optionText => {
     const option = document.createElement('option');
     option.innerText = optionText;
+    if(optionText === value) {
+      option.setAttribute('selected', true);
+    }
     option.value = optionText;
     select.appendChild(option);
   })
+
+  // if(value) {
+  //   select.setAttribute('value', value);
+  // }
 
   div.appendChild(select);
   div.appendChild(label);

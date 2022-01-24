@@ -1,24 +1,6 @@
 {
   "jobs": [
     {
-      "id": 4,
-      "company": "Facebook",
-      "title": "Software Engineer",
-      "application": "turned in",
-      "first_interview": "scheduled",
-      "second_interview": "n/a",
-      "third_interview": "n/a"
-    },
-    {
-      "company": "Disney",
-      "title": "Software Engineer",
-      "application": "Submitted",
-      "first_interview": "Completed",
-      "second_interview": "Scheduled",
-      "third_interview": "N/A",
-      "id": 5
-    },
-    {
       "company": "Flatiron School",
       "title": "Cohort Lead",
       "application": "Submitted",
@@ -26,6 +8,33 @@
       "second_interview": "Completed",
       "third_interview": "Scheduled",
       "id": 6
+    },
+    {
+      "company": "Google",
+      "title": "Software Engineer",
+      "application": "Submitted",
+      "first_interview": "Scheduled",
+      "second_interview": "N/A",
+      "third_interview": "N/A",
+      "id": 7
+    },
+    {
+      "company": "Twitter",
+      "title": "Software Engineer",
+      "application": "Submitted",
+      "first_interview": "N/A",
+      "second_interview": "N/A",
+      "third_interview": "N/A",
+      "id": 8
+    },
+    {
+      "company": "LinkedIn",
+      "title": "Software Engineer",
+      "application": "Submitted",
+      "first_interview": "Scheduled",
+      "second_interview": "",
+      "third_interview": "",
+      "id": 9
     }
   ]
 }
